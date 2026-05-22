@@ -203,7 +203,7 @@ export function TerminalEmulator({ tool, onClose }: TerminalEmulatorProps) {
 
     const navBluetooth = (navigator as any).bluetooth;
     if (!navBluetooth) {
-      setBtError('Web Bluetooth API is not supported in this browser context.');
+      setBtError('Web Bluetooth API is not supported in this browser context.\n\nNOTE: If you are using an Android App/WebView, hardware Bluetooth access is restricted by the OS. Please open PwnNet in a desktop browser (Chrome/Edge) to utilize this hardware feature.');
       setBtScanning(false);
       logService.addLog({ module: 'BLUETOOTH', event: 'Web Bluetooth Not Supported', target: 'LOCAL_RF', status: 'FAIL', details: 'Adapter context blocked or missing.'});
       return;
@@ -2222,16 +2222,10 @@ export function TerminalEmulator({ tool, onClose }: TerminalEmulatorProps) {
                     if (dorkType === 'email_lists') qr += `"@gmail.com" | "@yahoo.com" ext:txt | ext:csv "email"`;
                     
                     const url = `https://www.google.com/search?q=${encodeURIComponent(qr)}`;
-                    // For mobile standalone PWA support, we simply try opening in a new tab unconditionally.
-                    // If it fails, fallback to location jump.
-                    try {
-                        const win = window.open(url, '_blank');
-                        if (!win) throw new Error('Blocked');
-                    } catch(e) {
-                        window.location.href = url;
-                    }
+                    // For WebViews like HTML2APP, window.location.href is the most reliable way to force navigation
+                    window.location.href = url;
                   }}
-                  className="border border-neon-green bg-neon-green/15 hover:bg-neon-green/35 text-neon-green hover:text-white px-5 py-2.5 rounded-xl text-xs font-mono uppercase tracking-widest text-center transition-all font-bold active:scale-95 shadow-md shadow-neon-green/5 cursor-pointer"
+                  className="border border-neon-green bg-neon-green/15 hover:bg-neon-green/35 text-neon-green hover:text-white px-5 py-2.5 rounded-xl text-xs font-mono uppercase tracking-widest text-center transition-all font-bold active:scale-95 shadow-md shadow-neon-green/5 cursor-pointer block w-full"
                 >
                   LAUNCH SEARCH
                 </button>

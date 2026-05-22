@@ -85,7 +85,7 @@ export function SplashScreen({ onComplete }: { onComplete: () => void }) {
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.8, delay: 0.5 }}
         >
-          <p className="text-gray-400 font-medium text-sm tracking-[0.3em] uppercase glow-text">Advanced Network Exploitation Toolkit</p>
+          <p className="text-gray-400 font-medium text-sm tracking-[0.3em] uppercase glow-text text-shadow-sm">Advanced Network Exploitation Toolkit</p>
         </motion.div>
 
         {/* Minimal Loading Bar & Text */}

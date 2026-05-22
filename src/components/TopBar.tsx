@@ -7,25 +7,12 @@ interface TopBarProps {
 }
 
 export function TopBar({ title }: TopBarProps) {
-  const [timeStr, setTimeStr] = useState('');
   const [isLight, setIsLight] = useState(() => {
     if (typeof window !== 'undefined') {
       return localStorage.getItem('theme') === 'light';
     }
     return false;
   });
-
-  useEffect(() => {
-    const updateTime = () => {
-      const d = new Date();
-      const pad = (n: number) => d.toString().padStart(2, '0'); // pad isn't used below because we just string pad below
-      const padNum = (num: number) => num.toString().padStart(2, '0');
-      setTimeStr(`${padNum(d.getUTCHours())}:${padNum(d.getUTCMinutes())}:${padNum(d.getUTCSeconds())} UTC`);
-    };
-    updateTime();
-    const interval = setInterval(updateTime, 1000);
-    return () => clearInterval(interval);
-  }, []);
 
   useEffect(() => {
     const root = document.documentElement;
@@ -39,7 +26,10 @@ export function TopBar({ title }: TopBarProps) {
   }, [isLight]);
 
   return (
-    <div className="flex justify-between items-center px-4 h-14 bg-[#070707] border-b border-neon-green/30 shrink-0 relative select-none">
+    <div 
+      className="flex justify-between items-center px-4 bg-[#070707] border-b border-neon-green/30 shrink-0 relative select-none"
+      style={{ minHeight: 'calc(3.5rem + env(safe-area-inset-top))', paddingTop: 'env(safe-area-inset-top)' }}
+    >
       {/* Visual cyber glow sub-line */}
       <div className="absolute bottom-[-1px] left-0 right-0 h-[1.5px] bg-gradient-to-r from-transparent via-neon-green/50 to-transparent z-20 pointer-events-none" />
 
@@ -62,11 +52,6 @@ export function TopBar({ title }: TopBarProps) {
         <div className="hidden sm:flex items-center gap-1.5 text-gray-400 border border-neon-green/25 bg-black/90 px-2 py-1 rounded-xl select-none">
           <Shield size={10} className="text-neon-green" />
           <span>SHIELD: <span className="text-[#38bdf8] font-bold">ACTIVE</span></span>
-        </div>
-        
-        {/* GMT Terminal Clock */}
-        <div className="bg-black border border-neon-green/40 px-2.5 py-1 rounded-xl text-neon-green font-bold tracking-wider font-mono text-[10px] selection:bg-neon-green">
-          {timeStr || '00:00:00 UTC'}
         </div>
 
         {/* Theme Toggle Button */}

@@ -53,7 +53,7 @@ export default function App() {
       <AnimatePresence>
         {showSplash && <SplashScreen onComplete={() => setShowSplash(false)} />}
       </AnimatePresence>
-      <div className="flex flex-col h-screen bg-obsidian text-neon-green font-mono overflow-hidden">
+      <div className="flex flex-col h-[100dvh] w-full bg-obsidian text-neon-green font-mono overflow-hidden">
         <TopBar 
           title={getTitle()} 
           onTerminalToggle={activeTab === 'tools' ? () => setActiveTool(activeTool) : undefined} 
