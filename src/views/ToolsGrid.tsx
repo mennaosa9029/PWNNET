@@ -8,37 +8,19 @@ const getCategoryStyles = (category: string) => {
   switch (category) {
     case 'Recon':
       return {
-        accentText: 'text-cyan-400',
-        glowText: 'text-cyan-400 group-hover:text-cyan-300',
-        borderClass: 'border-cyan-500/20 hover:border-cyan-400/60',
-        bgGradient: 'bg-gradient-to-b from-[#081e2b]/50 to-[#030b10]/90',
-        iconBg: 'bg-gradient-to-br from-cyan-500/10 via-[#0a1e2a] to-cyan-950/40 border-cyan-500/25 text-cyan-400 group-hover:text-cyan-300 group-hover:border-cyan-400/50',
-        btnBg: 'hover:bg-cyan-500/[0.04] hover:shadow-[0_0_15px_rgba(34,211,238,0.12)]',
-        accentLine: 'bg-cyan-400',
-        badge: 'text-cyan-400/90 bg-cyan-950/50 border-cyan-500/20'
+        iconContainer: 'bg-gradient-to-br from-[#38bdf8] via-[#0284c7] to-[#082f49] shadow-[0_10px_20px_-5px_rgba(2,132,199,0.5),inset_0_2px_5px_rgba(255,255,255,0.5),inset_0_-3px_5px_rgba(0,0,0,0.4)] border border-t-[#7dd3fc]/50 border-x-[#0284c7]/30 border-b-black/80',
+        iconColor: 'text-white drop-shadow-[0_2px_5px_rgba(0,0,0,0.6)] drop-shadow-[0_0_15px_rgba(56,189,248,0.6)]',
       };
     case 'Web':
       return {
-        accentText: 'text-emerald-400',
-        glowText: 'text-emerald-400 group-hover:text-emerald-300',
-        borderClass: 'border-emerald-500/20 hover:border-emerald-400/60',
-        bgGradient: 'bg-gradient-to-b from-[#082214]/50 to-[#020b06]/90',
-        iconBg: 'bg-gradient-to-br from-emerald-500/10 via-[#0a2013] to-emerald-950/40 border-emerald-500/25 text-emerald-400 group-hover:text-emerald-300 group-hover:border-emerald-400/50',
-        btnBg: 'hover:bg-emerald-500/[0.04] hover:shadow-[0_0_15px_rgba(16,185,129,0.12)]',
-        accentLine: 'bg-emerald-400',
-        badge: 'text-emerald-400/90 bg-emerald-950/50 border-emerald-500/20'
+        iconContainer: 'bg-gradient-to-br from-[#34d399] via-[#059669] to-[#064e3b] shadow-[0_10px_20px_-5px_rgba(5,150,105,0.5),inset_0_2px_5px_rgba(255,255,255,0.5),inset_0_-3px_5px_rgba(0,0,0,0.4)] border border-t-[#6ee7b7]/50 border-x-[#059669]/30 border-b-black/80',
+        iconColor: 'text-white drop-shadow-[0_2px_5px_rgba(0,0,0,0.6)] drop-shadow-[0_0_15px_rgba(52,211,153,0.6)]',
       };
     case 'Utils':
     default:
       return {
-        accentText: 'text-purple-400',
-        glowText: 'text-purple-400 group-hover:text-purple-300',
-        borderClass: 'border-purple-500/20 hover:border-purple-400/60',
-        bgGradient: 'bg-gradient-to-b from-[#1a0827]/50 to-[#08020c]/90',
-        iconBg: 'bg-gradient-to-br from-purple-500/10 via-[#180824] to-purple-950/40 border-purple-500/25 text-purple-400 group-hover:text-purple-300 group-hover:border-purple-400/50',
-        btnBg: 'hover:bg-purple-500/[0.04] hover:shadow-[0_0_15px_rgba(168,85,247,0.12)]',
-        accentLine: 'bg-purple-400',
-        badge: 'text-purple-400/90 bg-purple-950/50 border-purple-500/20'
+        iconContainer: 'bg-gradient-to-br from-[#a78bfa] via-[#7c3aed] to-[#4c1d95] shadow-[0_10px_20px_-5px_rgba(124,58,237,0.5),inset_0_2px_5px_rgba(255,255,255,0.5),inset_0_-3px_5px_rgba(0,0,0,0.4)] border border-t-[#c4b5fd]/50 border-x-[#7c3aed]/30 border-b-black/80',
+        iconColor: 'text-white drop-shadow-[0_2px_5px_rgba(0,0,0,0.6)] drop-shadow-[0_0_15px_rgba(167,139,250,0.6)]',
       };
   }
 };
@@ -160,7 +142,7 @@ export function ToolsGrid({ onSelectTool }: ToolsGridProps) {
             <p className="font-sans text-xs text-gray-400 mt-1 max-w-xs">Double check your filters or search criteria. Command registry returned empty.</p>
           </div>
         ) : (
-          <div className="grid grid-cols-2 xs:grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-7 gap-4">
+          <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-7 gap-y-7 gap-x-4">
             {filteredTools.map((tool, index) => {
               const Icon = tool.icon;
               const styles = getCategoryStyles(tool.category);
@@ -168,42 +150,29 @@ export function ToolsGrid({ onSelectTool }: ToolsGridProps) {
                 <motion.button
                   key={tool.id}
                   onClick={() => onSelectTool(tool)}
-                  initial={{ opacity: 0, y: 12 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ type: "spring", stiffness: 260, damping: 20, delay: Math.min(index * 0.015, 0.2) }}
-                  whileHover={{ scale: 1.04 }}
-                  whileTap={{ scale: 0.97 }}
-                  className={`flex flex-col items-stretch text-left bg-[#0c0c0c]/90 border ${styles.borderClass} p-3.5 group transition-all duration-300 ease-out relative overflow-hidden aspect-square select-none cursor-pointer rounded-2xl ${styles.btnBg}`}
+                  initial={{ opacity: 0, scale: 0.9, y: 15 }}
+                  animate={{ opacity: 1, scale: 1, y: 0 }}
+                  transition={{ type: "spring", stiffness: 260, damping: 20, delay: Math.min(index * 0.015, 0.15) }}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="flex flex-col items-center justify-start text-center group transition-all duration-300 ease-out select-none cursor-pointer"
                 >
-                  {/* Subtle matrix-like grid index indicator */}
-                  <div className="absolute top-2.5 right-2.5 text-[8px] font-mono text-gray-500 group-hover:text-white/60 uppercase transition-colors">
-                    {tool.category.substring(0, 3)}-{index + 1}
-                  </div>
-
-                  {/* Upgraded Premium Icon section (rounded like client-side phone apps) */}
-                  <div className="flex-1 flex items-center justify-start mt-1">
-                    <div className={`p-2.5 ${styles.iconBg} border transition-all duration-300 ease-out rounded-xl shadow-inner`}>
-                      <Icon strokeWidth={1.8} size={38} />
-                    </div>
+                  {/* Neumorphic/Glossy App Icon Container */}
+                  <div className={`w-[85px] h-[85px] rounded-[18px] sm:w-[95px] sm:h-[95px] sm:rounded-[22px] flex items-center justify-center relative shadow-2xl transform transition-transform group-hover:-translate-y-1 ${styles.iconContainer}`}>
+                    {/* Glassy Top Reflection */}
+                    <div className="absolute top-0 inset-x-0 h-[45%] bg-gradient-to-b from-white/30 to-transparent rounded-t-[18px] sm:rounded-t-[22px] pointer-events-none" />
+                    {/* Inner glowing ring */}
+                    <div className="absolute inset-0 rounded-[18px] sm:rounded-[22px] border-[1.5px] border-white/10 mix-blend-overlay pointer-events-none" />
+                    
+                    <Icon size={46} strokeWidth={1.2} className={`${styles.iconColor} z-10 transition-transform duration-300 group-hover:scale-110`} />
                   </div>
 
                   {/* Title labels */}
-                  <div className="mt-2.5 flex flex-col w-full">
-                    <span className="text-[11.5px] font-bold font-sans text-gray-100 group-hover:text-white transition-colors line-clamp-1 tracking-wide">
+                  <div className="mt-2.5 flex flex-col w-full px-1">
+                    <span className="text-[12px] sm:text-[13px] font-bold font-sans text-gray-200 group-hover:text-white transition-colors truncate w-full tracking-wide drop-shadow-md">
                       {tool.name}
                     </span>
-                    <span className="text-[8px] uppercase tracking-wider font-mono text-gray-500 group-hover:text-white/80 mt-1 flex items-center justify-between">
-                      <span className={`px-1 rounded-sm text-[7.5px] font-extrabold ${styles.badge} border`}>
-                        {tool.category}
-                      </span>
-                      <span className={`text-[7.5px] ${styles.glowText} opacity-0 group-hover:opacity-100 transition-opacity font-extrabold tracking-widest`}>
-                        [LAUNCH]
-                      </span>
-                    </span>
                   </div>
-
-                  {/* Interactive glowing bottom tracker */}
-                  <div className={`absolute bottom-0 left-0 right-0 h-1 bg-transparent group-hover:${styles.accentLine} transition-all duration-300`} />
                 </motion.button>
               );
             })}

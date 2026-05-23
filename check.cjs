@@ -1,8 +1,7 @@
 const fs = require('fs');
-const html = fs.readFileSync('dist/index.html', 'utf-8');
-const lines = html.split('\n');
-for (let i = 0; i < lines.length; i++) {
-    if (lines[i].includes('import')) {
-        console.log('Line ' + (i + 1) + ':', lines[i].substring(0, 100));
-    }
+const content = fs.readFileSync('FINAL_ANDROID_APP.html', 'utf8');
+
+const pos = content.indexOf('Advanced Network Exploitation Toolkit');
+if (pos !== -1) {
+    console.log(content.substring(pos - 1000, pos + 200));
 }

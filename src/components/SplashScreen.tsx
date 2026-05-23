@@ -72,7 +72,7 @@ export function SplashScreen({ onComplete }: { onComplete: () => void }) {
             transition={{ duration: 2, repeat: Infinity, ease: "easeInOut", delay: 0.2 }}
           />
           <img 
-            src="https://i.postimg.cc/Y9wL20Xk/image-824616f3.png" 
+            src="https://i.postimg.cc/Y9wL20Xk/PWN-logo.png" 
             alt="PWNNET"
             className="w-full h-auto object-contain relative z-10 drop-shadow-2xl"
             referrerPolicy="no-referrer"

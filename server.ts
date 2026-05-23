@@ -60,6 +60,7 @@ app.get('/api/net/portscan', async (req, res) => {
     { port: 110, service: 'POP3' },
     { port: 143, service: 'IMAP' },
     { port: 443, service: 'HTTPS' },
+    { port: 445, service: 'SMB' },
     { port: 3306, service: 'MySQL' },
     { port: 8080, service: 'HTTP-Proxy' }
   ];
@@ -267,6 +268,170 @@ app.get('/api/net/shell', async (req, res) => {
     res.json({ ssh, ftp });
   } catch (error) {
     res.status(500).json({ error: 'Banner grab failed' });
+  }
+});
+
+// 7. GeoIP / IP Info (Using IP-API)
+app.get('/api/net/geoip', async (req, res) => {
+  const { target } = req.query;
+  if (!target || typeof target !== 'string') {
+    return res.status(400).json({ error: 'Target is required' });
+  }
+
+  try {
+    let lookupTarget = target;
+    // Resolve DNS First if it's a domain
+    if (!/^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$/.test(target)) {
+      try {
+        const lookRes = await dns.promises.lookup(target);
+        lookupTarget = lookRes.address;
+      } catch (err) {
+         return res.status(404).json({ error: 'DNS resolution failed for target host' });
+      }
+    }
+
+    const geoResponse = await fetch(`http://ip-api.com/json/${lookupTarget}`);
+    if (geoResponse.ok) {
+      const geoResult = await geoResponse.json();
+      if (geoResult.status === 'success') {
+         res.json({ targetIp: lookupTarget, geo: geoResult });
+         return;
+      }
+    }
+    
+    res.status(404).json({ error: 'Geolocation data not found' });
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to retrieve IP/Host info' });
+  }
+});
+
+// 8. TCP Ping
+app.get('/api/net/ping', async (req, res) => {
+  const { target } = req.query;
+  if (!target || typeof target !== 'string') {
+    return res.status(400).json({ error: 'Target is required' });
+  }
+
+  let hostIp = target;
+  try {
+    const lookRes = await dns.promises.lookup(target);
+    hostIp = lookRes.address;
+  } catch (e) {
+    return res.status(404).json({ error: 'DNS resolution failed.' });
+  }
+
+  const pingTcp = (port: number): Promise<number | null> => {
+     return new Promise((resolve) => {
+        const start = Date.now();
+        const socket = new net.Socket();
+        let connected = false;
+        
+        socket.setTimeout(2000);
+        socket.on('connect', () => {
+           connected = true;
+           socket.destroy();
+           resolve(Date.now() - start);
+        });
+        socket.on('timeout', () => {
+           socket.destroy();
+           resolve(null);
+        });
+        socket.on('error', () => {
+           socket.destroy();
+           if (!connected) resolve(null);
+        });
+        socket.connect(port, hostIp);
+     });
+  };
+
+  try {
+    const time80 = await pingTcp(80);
+    const time443 = await pingTcp(443);
+    
+    if (time80 !== null) {
+       res.json({ ip: hostIp, port: 80, time: time80 });
+    } else if (time443 !== null) {
+       res.json({ ip: hostIp, port: 443, time: time443 });
+    } else {
+       res.status(408).json({ error: 'Host unreachable or blocked ICMP/TCP ping requests' });
+    }
+  } catch (err) {
+    res.status(500).json({ error: 'Ping failed' });
+  }
+});
+
+// 9. TLS Certificate Verification
+app.get('/api/net/certs', async (req, res) => {
+  const { target } = req.query;
+  if (!target || typeof target !== 'string') {
+    return res.status(400).json({ error: 'Target is required' });
+  }
+
+  const tls = require('tls');
+  
+  const options = {
+    host: target,
+    port: 443,
+    servername: target,
+    rejectUnauthorized: false
+  };
+
+  const socket = tls.connect(options, () => {
+    const cert = socket.getPeerCertificate(true);
+    socket.destroy();
+
+    if (cert && Object.keys(cert).length > 0) {
+      res.json({
+        subject: cert.subject,
+        issuer: cert.issuer,
+        valid_from: cert.valid_from,
+        valid_to: cert.valid_to,
+        fingerprint: cert.fingerprint,
+        fingerprint256: cert.fingerprint256,
+        serialNumber: cert.serialNumber
+      });
+    } else {
+      res.status(404).json({ error: 'No certificate retrieved' });
+    }
+  });
+
+  socket.setTimeout(3000);
+  socket.on('timeout', () => {
+    socket.destroy();
+    res.status(408).json({ error: 'Timeout waiting for TLS socket' });
+  });
+
+  socket.on('error', (err: any) => {
+    socket.destroy();
+    res.status(500).json({ error: err.message || 'TLS connection failed' });
+  });
+});
+
+// 10. Have I Been Pwned check (using unofficial free lookup or error if blocked)
+app.get('/api/net/pwned', async (req, res) => {
+  const { email } = req.query;
+  if (!email || typeof email !== 'string') {
+    return res.status(400).json({ error: 'Email is required' });
+  }
+  
+  // Note: HIBP requires an API key, we will attempt to query a public endpoint or inform the user it requires an API key. 
+  // Let's use the standard haveibeenpwned.com API, but it returns 401 without a key.
+  // Instead of faking, we make the request and if it errors, we return the real error.
+  
+  try {
+     const pwnedRes = await fetch(`https://haveibeenpwned.com/api/v3/breachedaccount/${encodeURIComponent(email)}`);
+     if (pwnedRes.ok) {
+        const data = await pwnedRes.json();
+        res.json({ breaches: data });
+     } else if (pwnedRes.status === 404) {
+        res.json({ breaches: [] }); // Not pawned
+     } else if (pwnedRes.status === 401) {
+        res.status(401).json({ error: 'This tool requires a Have I Been Pwned API Key to be configured on the server environment. Provide API key in .env to use.' });
+     } else {
+        res.status(500).json({ error: `HIBP API returned status ${pwnedRes.status}`});
+     }
+  } catch (error) {
+     res.status(500).json({ error: 'Failed to contact HIBP registry' });
   }
 });
 

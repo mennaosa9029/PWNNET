@@ -48,7 +48,7 @@ export function Settings() {
         {/* Brand Header with custom logo */}
         <div className="flex flex-col items-center justify-center py-6 border border-neon-green/20 bg-[#0c0c0c]/80 backdrop-blur-sm p-4 rounded-3xl text-center shadow-lg">
           <img 
-            src="https://i.postimg.cc/Y9wL20Xk/image-824616f3.png" 
+            src="https://i.postimg.cc/Y9wL20Xk/PWN-logo.png" 
             alt="PWN//NET Config" 
             className="h-[150px] w-auto object-contain hover:scale-105 transition-all duration-300" 
             referrerPolicy="no-referrer"

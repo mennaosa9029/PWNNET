@@ -35,7 +35,7 @@ export function TopBar({ title }: TopBarProps) {
 
       <div className="text-xs font-mono tracking-widest uppercase flex items-center gap-3 relative z-0">
         <img 
-          src="https://i.postimg.cc/Y9wL20Xk/image-824616f3.png" 
+          src="https://i.postimg.cc/Y9wL20Xk/PWN-logo.png" 
           alt="PWN//NET" 
           className="h-[70px] -mb-4 w-auto object-contain hover:scale-105 transition-all duration-300 opacity-90" 
           referrerPolicy="no-referrer" 
